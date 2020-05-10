@@ -1,59 +1,66 @@
+#include <filesystem>
+// TODO(jez) absl::flat_hash_map
+#include <iostream>
+#include <map>
 #include <string>
 #include <vector>
 
 #include "spdlog/spdlog.h"
 
 using namespace std;
+namespace fs = std::filesystem;
 
-const vector<string> listing = {
-    "Brewfile",
-    "DECISIONS.md",
-    "Makefile",
-    "README.md",
-    "demo.sh",
-    "run-tests.sh",
-    "scaffold",
-    "scaffold/README.md",
-    "scaffold/TARGET.cm",
-    "scaffold/TARGET.mlb",
-    "scaffold/src",
-    "scaffold/src/call-main.sml",
-    "scaffold/src/main.sig",
-    "scaffold/src/main.sml",
-    "scaffold/symbol",
-    "symbol-new",
-    "tests",
-    "tests/logging.sh",
-    "tests/symbol",
-    "tests/symbol/errors.sh",
-    "tests/symbol/errors.sh.exp",
-    "tests/symbol/help.sh",
-    "tests/symbol/help.sh.exp",
-    "tests/symbol/infer-with.sh",
-    "tests/symbol/overwrite-existing.sh",
-    "tests/symbol/with-mlton.sh",
-    "tests/symbol/with-mlton.sh.exp",
-    "tests/symbol/with-smlnj.sh",
-    "tests/symbol/with-smlnj.sh.exp",
-    "tests/symbol-new",
-    "tests/symbol-new/existing-empty-dot.sh",
-    "tests/symbol-new/existing-empty-dot.sh.exp",
-    "tests/symbol-new/existing-empty.sh",
-    "tests/symbol-new/help.sh",
-    "tests/symbol-new/help.sh.exp",
-    "tests/symbol-new/infer-with.sh",
-    "tests/symbol-new/install-with-smlnj.sh",
-    "tests/symbol-new/new-empty.sh",
-    "tests/symbol-new/new-empty.sh.exp",
-    "tests/symbol-new/no-target.sh",
-    "tests/symbol-new/no-target.sh.exp",
-    "tests/symbol-new/version.sh",
-    "tests/symbol-new/version.sh.exp",
-    "tests/travis-install.sh",
+struct PathTrie {
+    map<fs::path, PathTrie> trie;
+
+    void insert(fs::path path) {
+        auto current = &this->trie;
+        for (const auto &component : path) {
+            if (current->find(component) != current->end()) {
+                current = &current->at(component).trie;
+            } else {
+                (*current)[component] = {};
+                current = &(*current)[component].trie;
+            }
+        }
+    }
+
+    string show() {
+        fmt::memory_buffer result;
+        this->_show(result, "");
+        return to_string(result);
+    }
+
+private:
+    void _show(fmt::memory_buffer &result, string_view outerPrefix) const {
+        // TODO(jez) Handle non-UTF-8 output
+        const auto normalPrefix = fmt::format("{}│   ", outerPrefix);
+        const auto lastPrefix = fmt::format("{}    ", outerPrefix);
+
+        size_t idx = 0;
+        for (const auto &[path, it] : this->trie) {
+            ++idx;
+
+            if (idx != this->trie.size()) {
+                fmt::format_to(result, "{}├── {}\n", outerPrefix, path.string());
+                it._show(result, normalPrefix);
+            } else {
+                fmt::format_to(result, "{}└── {}\n", outerPrefix, path.string());
+                it._show(result, lastPrefix);
+            }
+        }
+    }
 };
 
 int main(int argc, char *argv[]) {
-    fmt::print("Hello, world!\n");
+    auto trie = PathTrie{};
+
+    for (string line; getline(cin, line);) {
+        trie.insert(line);
+    }
+
+    // TODO(jez) Handle absolute paths
+    fmt::print(".\n{}", trie.show());
 
     return 0;
 }
