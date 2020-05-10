@@ -1,5 +1,7 @@
 #include <filesystem>
+#include <unistd.h>
 // TODO(jez) absl::flat_hash_map
+#include <fstream>
 #include <iostream>
 #include <map>
 #include <string>
@@ -52,11 +54,44 @@ private:
     }
 };
 
+namespace {
+
+const string usage = "Print a list of paths as a tree of paths.\n"
+                     "\n"
+                     "Usage:\n"
+                     "  as-tree [<file>]\n"
+                     "\n"
+                     "Arguments:\n"
+                     "  <file>      The file to read from [default: stdin]\n"
+                     "\n";
+
+void drainInputToPathTrie(istream &is, PathTrie &trie) {
+    string line;
+    while (getline(is, line)) {
+        trie.insert(line);
+    }
+}
+
+} // namespace
+
 int main(int argc, char *argv[]) {
     auto trie = PathTrie{};
 
-    for (string line; getline(cin, line);) {
-        trie.insert(line);
+    switch (argc) {
+        case 1:
+            if (isatty(STDIN_FILENO)) {
+                fmt::print(stderr, "Warning: reading from stdin, which is a tty.\n");
+            }
+            drainInputToPathTrie(cin, trie);
+            break;
+        case 2: {
+            ifstream in(argv[1]);
+            drainInputToPathTrie(in, trie);
+            break;
+        }
+        default:
+            fmt::print(stderr, "{}", usage);
+            return 1;
     }
 
     // TODO(jez) Handle absolute paths
