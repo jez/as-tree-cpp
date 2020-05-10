@@ -80,7 +80,7 @@ int main(int argc, char *argv[]) {
             drainInputToPathTrie(cin, trie);
             break;
         case 2: {
-            //  TODO(jez) Use rang for option parsing?
+            //  TODO(jez) Use cxxopt for option parsing?
             if (string("-h") == argv[1] || string("--help") == argv[1]) {
                 fmt::print(stderr, "{}", usage);
                 return 0;
