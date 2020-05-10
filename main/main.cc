@@ -17,14 +17,10 @@ struct PathTrie {
     map<fs::path, PathTrie> trie;
 
     void insert(fs::path path) {
-        auto current = &this->trie;
+        auto current = this;
         for (const auto &component : path) {
-            if (current->find(component) != current->end()) {
-                current = &current->at(component).trie;
-            } else {
-                (*current)[component] = {};
-                current = &(*current)[component].trie;
-            }
+            // Default constructs element if lookup fails
+            current = &current->trie[component];
         }
     }
 
