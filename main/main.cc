@@ -2,7 +2,6 @@
 #include <fstream>
 #include <iostream>
 #include <map>
-#include <sstream>
 #include <string>
 #include <unistd.h>
 #include <vector>
@@ -23,14 +22,10 @@ struct PathTrie {
         }
     }
 
-    string show() {
-        ostringstream result;
-        this->_show(result, "");
-        return result.str();
-    }
-
 private:
-    void _show(ostringstream &result, string_view outerPrefix) const {
+    friend ostream &operator<<(ostream &result, const PathTrie &trie);
+
+    ostream &fmt(ostream &result, string_view outerPrefix) const {
         // TODO(jez) Handle non-UTF-8 output
         const auto normalPrefix = string(outerPrefix) + "│   ";
         const auto lastPrefix = string(outerPrefix) + "    ";
@@ -41,14 +36,19 @@ private:
 
             if (idx != this->trie.size()) {
                 result << outerPrefix << "├── " << path.string() << "\n";
-                it._show(result, normalPrefix);
+                it.fmt(result, normalPrefix);
             } else {
                 result << outerPrefix << "└── " << path.string() << "\n";
-                it._show(result, lastPrefix);
+                it.fmt(result, lastPrefix);
             }
         }
+        return result;
     }
 };
+
+ostream &operator<<(ostream &result, const PathTrie &trie) {
+    return trie.fmt(result, "");
+}
 
 const string usage = "Print a list of paths as a tree of paths.\n"
                      "\n"
@@ -94,7 +94,7 @@ int main(int argc, char *argv[]) {
     }
 
     // TODO(jez) Handle absolute paths
-    cout << ".\n" << trie.show();
+    cout << ".\n" << trie;
 
     return 0;
 }
