@@ -112,3 +112,12 @@ lldb -- bazel-bin/main/as-tree
 tools/scripts/build_compilation_db.sh
 ```
 
+## TODO(jez)
+
+- [ ] Color output according to LS_COLORS environment variable. Prior art:
+  - <https://github.com/sharkdp/lscolors#references>
+  - <https://github.com/tavianator/bfs/blob/2d3b03183c9f1/color.c#L308>
+- [ ] Only use box drawing characters if the locale supports it
+  - See `man locale`, `LC_CTYPE=C tree`
+- [ ] Collapse consecutive singleton tries into one level
+  - `tree` also does this

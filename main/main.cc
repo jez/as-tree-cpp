@@ -27,7 +27,6 @@ private:
     friend ostream &operator<<(ostream &result, const PathTrie &trie);
 
     ostream &fmt(ostream &result, string_view outerPrefix) const {
-        // TODO(jez) Handle non-UTF-8 locale
         const auto normalPrefix = string(outerPrefix) + "│   ";
         const auto lastPrefix = string(outerPrefix) + "    ";
 
@@ -35,7 +34,6 @@ private:
         for (const auto &[path, it] : this->trie) {
             ++idx;
 
-            // TODO(jez) Might be nice to print these according to LS_COLORS
             if (idx != this->trie.size()) {
                 result << outerPrefix << "├── " << path.string() << "\n";
                 it.fmt(result, normalPrefix);
@@ -56,7 +54,6 @@ ostream &operator<<(ostream &result, const PathTrie &trie) {
     if (trie.trie.size() == 1) {
         auto [path, it] = *trie.trie.begin();
         if (path.is_absolute() || path == ".") {
-            // TODO(jez) Might be nice to print these according to LS_COLORS
             result << path.string() << "\n";
             return it.fmt(result, "");
         }
