@@ -1,2 +1,100 @@
 # as-tree
 
+Print a list of paths as a tree of paths.
+
+For example, given:
+
+```
+dir1/foo.txt
+dir1/bar.txt
+dir3/qux.txt
+```
+
+it will print:
+
+```
+.
+├── dir1
+│   ├── foo.txt
+│   └── bar.txt
+└── dir2
+```
+
+This tools is particularly useful when used with `find` or `fd` to produce such
+a list of files. It's similar in spirit to `tree`, but `find` and `fd` tend to
+be more powerful when it comes to controling which files to list.
+
+Inspired by [this feature request](https://github.com/sharkdp/fd/issues/283).
+
+## Install
+
+This project is written in C++ and built using Bazel. The Makefile will download
+all the tools you need to build it, including Bazel and a C++ toolchain.
+
+There are unfortunately no pre-built binaries currently.
+
+```shell
+# Build from source, installs to ~/.local/bin/as-tree
+make install
+
+# Build from source, installs to /usr/local/bin/as-tree
+make install prefix=/usr/local
+```
+
+## Usage
+
+```
+❯ as-tree --help
+Print a list of paths as a tree of paths.
+
+Usage:
+  as-tree [<file>]
+
+Arguments:
+  <file>      The file to read from [default: stdin]
+```
+
+## Example
+
+This tools is particularly useful with tools like `fd` which can prune the list
+of files to print better than `tree` can alone.
+
+```
+❯ fd --exclude test | as-tree
+.
+├── LICENSE.md
+├── Makefile
+├── README.md
+├── WORKSPACE
+├── bazel
+├── main
+│   ├── BUILD
+│   └── main.cc
+├── third_party
+│   ├── BUILD
+│   ├── externals.bzl
+│   └── spdlog.BUILD
+└── tools
+    ├── BUILD
+    ├── clang.bzl
+    └── scripts
+        ├── build_compilation_db.sh
+        └── generate_compdb_targets.sh
+```
+
+## Developing
+
+```shell
+# Fast build (some debug info, but fast compile times):
+./bazel build //main:as-tree
+
+# Debug build (great debug info):
+./bazel build //main:as-tree -c dbg --config=debugsymbols
+
+# Launch the debugger:
+lldb -- bazel-bin/main/as-tree
+
+# Generate compile_commands.json for use with clangd (C++ LSP):
+tools/scripts/build_compilation_db.sh
+```
+
