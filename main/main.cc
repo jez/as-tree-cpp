@@ -19,7 +19,7 @@ struct PathTrie {
     void insert(fs::path path) {
         auto current = &this->trie;
         for (const auto &component : path) {
-            if (current->find(component) != current->end()) {
+            if (current->contains(component)) {
                 current = &current->at(component).trie;
             } else {
                 (*current)[component] = {};
