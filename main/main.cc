@@ -49,6 +49,20 @@ private:
 };
 
 ostream &operator<<(ostream &result, const PathTrie &trie) {
+    if (trie.trie.empty()) {
+        return result << "\n";
+    }
+
+    if (trie.trie.size() == 1) {
+        auto [path, it] = *trie.trie.begin();
+        if (path.is_absolute() || path == ".") {
+            // TODO(jez) Might be nice to print these according to LS_COLORS
+            result << path.string() << "\n";
+            return it.fmt(result, "");
+        }
+    }
+
+    result << ".\n";
     return trie.fmt(result, "");
 }
 
@@ -124,8 +138,7 @@ int main(int argc, char *argv[]) {
         drainInputToPathTrie(in, trie);
     }
 
-    // TODO(jez) Handle absolute paths
-    cout << ".\n" << trie;
+    cout << trie;
 
     return 0;
 }
