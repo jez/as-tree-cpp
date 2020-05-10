@@ -12,7 +12,7 @@ load("@com_grail_bazel_toolchain//toolchain:rules.bzl", "llvm_toolchain")
 llvm_toolchain(
     name = "llvm_toolchain",
     absolute_paths = True,
-    llvm_version = "10.0.0",
+    llvm_version = "9.0.0",
 )
 
 # Use llvm_toolchain by default
