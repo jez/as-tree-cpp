@@ -2,11 +2,10 @@
 #include <fstream>
 #include <iostream>
 #include <map>
+#include <sstream>
 #include <string>
 #include <unistd.h>
 #include <vector>
-
-#include "spdlog/spdlog.h"
 
 using namespace std;
 namespace fs = std::filesystem;
@@ -25,26 +24,26 @@ struct PathTrie {
     }
 
     string show() {
-        fmt::memory_buffer result;
+        ostringstream result;
         this->_show(result, "");
-        return to_string(result);
+        return result.str();
     }
 
 private:
-    void _show(fmt::memory_buffer &result, string_view outerPrefix) const {
+    void _show(ostringstream &result, string_view outerPrefix) const {
         // TODO(jez) Handle non-UTF-8 output
-        const auto normalPrefix = fmt::format("{}│   ", outerPrefix);
-        const auto lastPrefix = fmt::format("{}    ", outerPrefix);
+        const auto normalPrefix = string(outerPrefix) + "│   ";
+        const auto lastPrefix = string(outerPrefix) + "    ";
 
         size_t idx = 0;
         for (const auto &[path, it] : this->trie) {
             ++idx;
 
             if (idx != this->trie.size()) {
-                fmt::format_to(result, "{}├── {}\n", outerPrefix, path.string());
+                result << outerPrefix << "├── " << path.string() << "\n";
                 it._show(result, normalPrefix);
             } else {
-                fmt::format_to(result, "{}└── {}\n", outerPrefix, path.string());
+                result << outerPrefix << "└── " << path.string() << "\n";
                 it._show(result, lastPrefix);
             }
         }
@@ -75,14 +74,14 @@ int main(int argc, char *argv[]) {
     switch (argc) {
         case 1:
             if (isatty(STDIN_FILENO)) {
-                fmt::print(stderr, "Warning: reading from stdin, which is a tty.\n");
+                cerr << "Warning: reading from stdin, which is a tty." << endl;
             }
             drainInputToPathTrie(cin, trie);
             break;
         case 2: {
             //  TODO(jez) Use cxxopt for option parsing?
             if (string("-h") == argv[1] || string("--help") == argv[1]) {
-                fmt::print(stderr, "{}", usage);
+                cerr << usage;
                 return 0;
             }
             ifstream in(argv[1]);
@@ -90,12 +89,12 @@ int main(int argc, char *argv[]) {
             break;
         }
         default:
-            fmt::print(stderr, "{}", usage);
+            cerr << usage;
             return 1;
     }
 
     // TODO(jez) Handle absolute paths
-    fmt::print(".\n{}", trie.show());
+    cout << ".\n" << trie.show();
 
     return 0;
 }

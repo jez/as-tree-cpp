@@ -4,7 +4,5 @@ cc_binary(
         "main.cc",
     ],
     visibility = ["//visibility:public"],
-    deps = [
-        "@spdlog",
-    ],
+    deps = [],
 )

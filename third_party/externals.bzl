@@ -14,14 +14,6 @@ def io_jez_as_tree_register_dependencies():
     )
 
     http_archive(
-        name = "spdlog",
-        url = "https://github.com/gabime/spdlog/archive/c2b47430fb210c8822177407b9e4b82d4ef7455d.zip",  # v1.3.1
-        sha256 = "08b7e0f1d7c62a56dfbac5678979967690ccd9e074acd3762a2a49d8731961e6",
-        build_file = "@io_jez_as_tree//third_party:spdlog.BUILD",
-        strip_prefix = "spdlog-c2b47430fb210c8822177407b9e4b82d4ef7455d",
-    )
-
-    http_archive(
         name = "bazel-compilation-database",
         url = "https://github.com/grailbio/bazel-compilation-database/archive/0ae6349c52700f060c9a87c5ed2b04b75f94a26f.zip",
         sha256 = "40ad122fedbf2d8b23e70e16b5f49c1a316f02db3ed29ce1af8650dad6ccc1a9",
