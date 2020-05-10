@@ -114,9 +114,8 @@ tools/scripts/build_compilation_db.sh
 
 ## TODO(jez)
 
+- clang-format / buildifier / shellcheck in CI
 - tests for CLI options
-- CI / prebuilt binaries / homebrew package
-  - Cache all the bazel things
 - [ ] Color output according to LS_COLORS environment variable. Prior art:
   - <https://github.com/sharkdp/lscolors#references>
   - <https://github.com/tavianator/bfs/blob/2d3b03183c9f1/color.c#L308>
