@@ -2,6 +2,7 @@
 #include <fstream>
 #include <iostream>
 #include <map>
+#include <optional>
 #include <string>
 #include <unistd.h>
 #include <vector>
@@ -66,31 +67,60 @@ void drainInputToPathTrie(istream &is, PathTrie &trie) {
     }
 }
 
+struct Options {
+    optional<string> filename;
+};
+
+Options parseOptionsOrDie(int argc, char *argv[]) {
+    if (argc == 0) {
+        cerr << usage;
+        exit(1);
+    }
+
+    optional<string> filename;
+    for (int argi = 1; argi < argc; argi++) {
+        auto arg = string_view(argv[argi]);
+
+        if (arg.size() == 0) {
+            cerr << "Unrecognized argument: " << arg << "\n\n" << usage;
+            exit(1);
+        }
+
+        if (arg == "-h" || arg == "--help") {
+            cerr << usage;
+            exit(0);
+        }
+
+        if (arg[0] == '-') {
+            cerr << "Unrecognized option: " << arg << "\n\n" << usage;
+            exit(1);
+        }
+
+        if (filename.has_value()) {
+            cerr << "Extra argument: " << arg << "\n\n" << usage;
+            exit(1);
+        }
+
+        filename = arg;
+    }
+
+    return {{filename}};
+}
+
 } // namespace
 
 int main(int argc, char *argv[]) {
-    auto trie = PathTrie{};
+    auto options = parseOptionsOrDie(argc, argv);
 
-    switch (argc) {
-        case 1:
-            if (isatty(STDIN_FILENO)) {
-                cerr << "Warning: reading from stdin, which is a tty." << endl;
-            }
-            drainInputToPathTrie(cin, trie);
-            break;
-        case 2: {
-            //  TODO(jez) Use cxxopt for option parsing?
-            if (string("-h") == argv[1] || string("--help") == argv[1]) {
-                cerr << usage;
-                return 0;
-            }
-            ifstream in(argv[1]);
-            drainInputToPathTrie(in, trie);
-            break;
+    auto trie = PathTrie{};
+    if (options.filename == nullopt) {
+        if (isatty(STDIN_FILENO)) {
+            cerr << "Warning: reading from stdin, which is a tty." << endl;
         }
-        default:
-            cerr << usage;
-            return 1;
+        drainInputToPathTrie(cin, trie);
+    } else {
+        ifstream in(argv[1]);
+        drainInputToPathTrie(in, trie);
     }
 
     // TODO(jez) Handle absolute paths
