@@ -8,9 +8,9 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_file"
 def io_jez_as_tree_register_dependencies():
     http_archive(
         name = "com_grail_bazel_toolchain",
-        url = "https://github.com/grailbio/bazel-toolchain/archive/0.5.zip",
-        sha256 = "33011cd77021017294d1982b48d0c3a081c777b9aad9a75f3e4eada0e10894d1",
-        strip_prefix = "bazel-toolchain-0.5",
+        url = "https://github.com/grailbio/bazel-toolchain/archive/edd07e96a2ecaa131af9234d6582875d980c0ac7.zip",
+        sha256 = "50bc11ee11fd16800ff392baa1c86d91864d5eeb506b9b78b92751ed3f33817d",
+        strip_prefix = "bazel-toolchain-edd07e96a2ecaa131af9234d6582875d980c0ac7",
     )
 
     http_archive(
