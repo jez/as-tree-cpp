@@ -91,6 +91,20 @@ of files to print better than `tree` can alone.
 # Debug build (great debug info):
 ./bazel build //main:as-tree -c dbg --config=debugsymbols
 
+# Run the tests:
+./bazel test --test_output=errors //test
+
+# To add a test, create two files:
+#
+# - test/fixtures/foo.txt
+# - test/fixtures/foo.txt.exp
+#
+# The first file is the input to feed to `as-tree`, and the second is the
+# expected output of `as-tree` on that input
+
+# Update all the tests:
+./bazel test //test:update
+
 # Launch the debugger:
 lldb -- bazel-bin/main/as-tree
 

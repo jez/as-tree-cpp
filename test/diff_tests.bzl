@@ -1,6 +1,7 @@
 
 def diff_tests(input_files):
     tests = []
+    updates = []
     for input_file in input_files:
 
         genrule_name = "gen_{}.actual".format(input_file)
@@ -63,9 +64,16 @@ def diff_tests(input_files):
         )
 
         tests.append(test_name)
+        updates.append(update_name)
 
     native.test_suite(
         name = "test",
-        tests = tests
+        tests = tests,
+    )
+
+    native.test_suite(
+        name = "update",
+        tests = updates,
+        tags = ["manual"],
     )
 
