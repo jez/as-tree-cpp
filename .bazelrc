@@ -16,7 +16,3 @@ build:debugsymbols --copt=-g3 --copt=-fstandalone-debug --copt=-DDEBUG_SYMBOLS -
 build:debugsymbols --linkopt=-g3 --linkopt=-fstandalone-debug --linkopt=-DDEBUG_SYMBOLS --linkopt=-glldb
 build:debugsymbols --spawn_strategy=standalone
 build:debugsymbols --genrule_strategy=standalone
-
-# TODO(jez) debug configuration
-# TODO(jez) static linking configuration
-# TODO(jez) release configuration
