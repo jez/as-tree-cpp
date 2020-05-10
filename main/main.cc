@@ -1,16 +1,17 @@
 #include <filesystem>
-#include <unistd.h>
-// TODO(jez) absl::flat_hash_map
 #include <fstream>
 #include <iostream>
 #include <map>
 #include <string>
+#include <unistd.h>
 #include <vector>
 
 #include "spdlog/spdlog.h"
 
 using namespace std;
 namespace fs = std::filesystem;
+
+namespace {
 
 struct PathTrie {
     map<fs::path, PathTrie> trie;
@@ -54,8 +55,6 @@ private:
     }
 };
 
-namespace {
-
 const string usage = "Print a list of paths as a tree of paths.\n"
                      "\n"
                      "Usage:\n"
@@ -68,7 +67,7 @@ const string usage = "Print a list of paths as a tree of paths.\n"
 void drainInputToPathTrie(istream &is, PathTrie &trie) {
     string line;
     while (getline(is, line)) {
-        trie.insert(line);
+        trie.insert(move(line));
     }
 }
 
@@ -85,6 +84,11 @@ int main(int argc, char *argv[]) {
             drainInputToPathTrie(cin, trie);
             break;
         case 2: {
+            //  TODO(jez) Use rang for option parsing?
+            if (string("-h") == argv[1] || string("--help") == argv[1]) {
+                fmt::print(stderr, "{}", usage);
+                return 0;
+            }
             ifstream in(argv[1]);
             drainInputToPathTrie(in, trie);
             break;

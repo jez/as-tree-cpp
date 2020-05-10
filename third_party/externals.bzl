@@ -14,13 +14,6 @@ def io_jez_as_tree_register_dependencies():
     )
 
     http_archive(
-        name = "com_google_absl",
-        url = "https://github.com/abseil/abseil-cpp/archive/62f05b1f57ad660e9c09e02ce7d591dcc4d0ca08.zip",
-        sha256 = "afcab9f226ac4ca6b6b7c9ec704a995fe32a6b555d6935b0de247ae6ac6940e0",
-        strip_prefix = "abseil-cpp-62f05b1f57ad660e9c09e02ce7d591dcc4d0ca08",
-    )
-
-    http_archive(
         name = "spdlog",
         url = "https://github.com/gabime/spdlog/archive/c2b47430fb210c8822177407b9e4b82d4ef7455d.zip",  # v1.3.1
         sha256 = "08b7e0f1d7c62a56dfbac5678979967690ccd9e074acd3762a2a49d8731961e6",
