@@ -114,6 +114,7 @@ tools/scripts/build_compilation_db.sh
 
 ## TODO(jez)
 
+- Figure out how to support macOS older than Catalina
 - clang-format / buildifier / shellcheck in CI
 - tests for CLI options
 - [ ] Color output according to LS_COLORS environment variable. Prior art:

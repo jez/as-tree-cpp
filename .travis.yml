@@ -1,0 +1,21 @@
+# Do not choose a language; we provide our own build tools.
+language: generic
+
+# TODO(jez) Try to cache some things for faster builds
+# cache:
+
+os:
+  - linux
+  # This project only builds on Catalina (std::filesystem)
+  # but Travis only has Mojave.
+  # - osx
+
+install:
+  - ./bazel --help
+
+script:
+  - ./bazel test --test_output=errors //test
+
+before_deploy:
+  - make install
+  - cd "$HOME/.local/bin" && zip "as-tree-${TRAVIS_TAG}-${TRAVIS_OS_NAME}.zip" ./as-tree
