@@ -1,4 +1,13 @@
-# as-tree
+# as-tree-cpp
+
+**Note**: I rewrote this in Rust because I was using a C++17 API that is
+only available on macOS Catalina and later:
+
+https://github.com/jez/as-tree
+
+This code still builds and passes the tests, but it will not be maintained.
+
+- - -
 
 Print a list of paths as a tree of paths.
 
@@ -7,7 +16,7 @@ For example, given:
 ```
 dir1/foo.txt
 dir1/bar.txt
-dir3/qux.txt
+dir2/qux.txt
 ```
 
 it will print:
@@ -18,9 +27,10 @@ it will print:
 │   ├── foo.txt
 │   └── bar.txt
 └── dir2
+    └── qux.txt
 ```
 
-This tools is particularly useful when used with `find` or `fd` to produce such
+This tool is particularly useful when used with `find` or `fd` to produce such
 a list of files. It's similar in spirit to `tree`, but `find` and `fd` tend to
 be more powerful when it comes to controling which files to list.
 
@@ -30,8 +40,6 @@ Inspired by [this feature request](https://github.com/sharkdp/fd/issues/283).
 
 This project is written in C++ and built using Bazel. The Makefile will download
 all the tools you need to build it, including Bazel and a C++ toolchain.
-
-There are unfortunately no pre-built binaries currently.
 
 ```shell
 # Build from source, installs to ~/.local/bin/as-tree
@@ -56,7 +64,7 @@ Arguments:
 
 ## Example
 
-This tools is particularly useful with tools like `fd` which can prune the list
+This tool is particularly useful with tools like `fd` which can prune the list
 of files to print better than `tree` can alone.
 
 ```
