@@ -1,6 +1,6 @@
 BAZEL_VERSION = "3.1.0"
 
-workspace(name = "io_jez_as_tree")
+workspace(name = "io_jez_as_tree_cpp")
 
 load("//third_party:externals.bzl", "io_jez_as_tree_register_dependencies")
 io_jez_as_tree_register_dependencies()
